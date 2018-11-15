@@ -1,4 +1,4 @@
-# nf-core/merge_fastq: Troubleshooting
+# merge_fastq: Troubleshooting
 
 ## Extra resources and getting help
 If you still have an issue with running the pipeline then feel free to contact us.

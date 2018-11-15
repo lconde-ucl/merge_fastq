@@ -1,4 +1,4 @@
-# nf-core/merge_fastq: Usage
+# merge_fastq: Usage
 
 ## Table of contents
 
@@ -31,12 +31,23 @@ NXF_OPTS='-Xms1g -Xmx4g'
 ```
 
 ## Running the pipeline
-The typical command for running the pipeline is as follows:
+The typical command for running the pipeline  with the "nextflow_mergefastq' alias is as follows:
 ```bash
-nextflow run nf-core/merge_fastq --inputdir fastq_files -profile legion
+module load blic-modules
+module load nextflow
+
+nextflow_mergefastq --inputdir fastq_files --outputdir merged_fastq_files 
 ```
 
 This will launch the pipeline with the `legion` configuration profile. See below for more information about profiles.
+
+If you wnat to run the pipeline using a different profile, then you need to specify the full command instead of the shortcut:
+```bash
+module load blic-modules
+module load nextflow
+
+nextflow run /shared/ucl/depts/cancer/apps/nextflow_pipelines/merge_fastq-master -profile legion --inputdir fastq_files --outputdir merged_fastq_files 
+```
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -50,7 +61,7 @@ merged_fastq_files       # Finished results (configurable, see below)
 ## Main Arguments
 
 ### `-profile`
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments. Note that multiple profiles can be loaded, for example: `-profile standard,docker` - the order of arguments is important!
+Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
 
 * `standard`
     * The default profile, used if `-profile` is not specified at all.
@@ -84,6 +95,7 @@ The output directory where the results will be saved. If left unespecified, it w
 
 ### `-resume`
 Specify this when restarting a pipeline. Nextflow will used cached results from any pipeline steps where the inputs are the same, continuing from where it got to previously.
+Please note that since this pipeline only runs one process, the -resume option is not useful here. This might change if more processes are added to the pipeline in the future.
 
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
 

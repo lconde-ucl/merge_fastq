@@ -1,4 +1,4 @@
-# nf-core/merge_fastq: Documentation
+# merge_fastq: Documentation
 
 The nf-core/merge_fastq documentation is split into the following files:
 

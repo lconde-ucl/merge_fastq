@@ -1,6 +1,6 @@
-# nf-core/merge_fastq: Output
+# merge_fastq: Output
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline.
 
 
 ## Pipeline overview
@@ -10,9 +10,19 @@ and processes data using the following steps:
 * [merge_fastq](#merge_fastq) - Merge FastQ files
 
 ## merge_fastq
-[F](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%T/A/G/C). You get information about adapter contamination and other overrepresented sequences.
+This script is based on the [merge_and_rename_NGI_fastq_files.py](https://github.com/SciLifeLab/standalone_scripts) standalone script from SciLifeLab.
+FastQ files are expected to have the typical Illumina naming convention (Ex: SampleName_S1_L001_R1_001.fastq.gz) to make sure that lanes are merged correctly.
 
-For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+Example: 
+	fastq_files/E3387-1t_S9_L001_R1_001.fastq.gz
+	fastq_files/E3387-1t_S9_L002_R1_001.fastq.gz
+		are merged as E3387-1t_R1.fastq.gz
+
+	fastq_files/E3387-3t_S10_L001_R1_001.fastq.gz
+	fastq_files/E3387-3t_S10_L003_R1_001.fastq.gz
+	fastq_files/E3387-3t_S11_L001_R1_001.fastq.gz
+	fastq_files/E3387-3t_S11_L002_R1_001.fastq.gz
+		are merged as ./E3387-3t_R1.fastq.gz
 
 **Output directory: `merged_fastq_files/`**
 
