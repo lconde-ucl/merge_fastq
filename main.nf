@@ -12,9 +12,14 @@
 
 def helpMessage() {
     log.info"""
-    =========================================
+    =======================================================
+                                              ,--./,-.
+              ___     __   __   __   ___     /,-._.--~\'
+        |\\ | |__  __ /  ` /  \\ |__) |__         }  {
+        | \\| |       \\__, \\__/ |  \\ |___     \\`-._,-`-,
+                                              `._,._,\'
      nf-core/merge_fastq v${workflow.manifest.version}
-    =========================================
+    =======================================================
     Usage:
 
     The typical command for running the pipeline is as follows:
@@ -27,34 +32,46 @@ def helpMessage() {
     """.stripIndent()
 }
 
-/*
- * Defines reads and outputdir
- */
+// Show help emssage
+params.help = false
+if (params.help){
+    helpMessage()
+    exit 0
+}
+
+
+// Defines reads and outputdir
 params.inputdir = "fastq_files"
 params.outdir = 'merged_fastq_files'
 input = file(params.inputdir)
 
-/* 
- * header 
- */
 
-println "=========================================="
-println "M E R G E_F A S T Q    P I P E L I N E    "
-println "=========================================="
-println "inputdir           : ${params.inputdir}"
-println "outdir             : ${params.outdir}"
+// Header 
+println "========================================================"
+println "                                       ,--./,-.         "
+println "          ___     __  __   __  ___    /,-._.--~\'       "
+println "    |\\ | |__  __ /  `/  \\ |__)|__        }  {         "
+println "    | \\| |       \\__ \\__/ |  \\|___   \\`-._,-`-,    "
+println "                                      `._,._,\'         "
+println "                                                        "
+println "       M E R G E _ F A S T Q    P I P E L I N E         "
+println "========================================================"
+println "['Pipeline Name']     = nf-core/merge_fastq"
+println "['Pipeline Version']  = workflow.manifest.version"
+println "['Inputdir']          = $params.inputdir"
+println "['Output dir']        = $params.outdir"
+println "['Working dir']       = workflow.workDir"
+println "['Container Engine']  = workflow.containerEngine"
+println "['Current home']      = $HOME"
+println "['Current user']      = $USER"
+println "['Current path']      = $PWD"
+println "['Working dir']       = workflow.workDir"
+println "['Script dir']        = workflow.projectDir"
+println "['Config Profile']    = workflow.profile"
+println "========================================================"
 
-/*
- * Show help when needed
- */
-if (params.help){
-    log.info helpMessage
-    exit 0
-}
  
-/*
- * Merge FastQ files
- */
+// Merge FastQ files
 
 process merge_fastq {
 
@@ -74,6 +91,8 @@ process merge_fastq {
 }
 
 workflow.onComplete { 
-	println ( workflow.success ? "Merging done! transferring merged files and wrapping up..." : "Oops .. something went wrong" )
+    println ( workflow.success ? "Merging done! transferring merged files and wrapping up..." : "Oops .. something went wrong" )
+    log.info "[nf-core/test] Pipeline Complete"
+
 }
 
