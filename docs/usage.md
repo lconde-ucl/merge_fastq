@@ -2,7 +2,6 @@
 
 ## Table of contents
 
-* [Introduction](#general-nextflow-info)
 * [Running the pipeline](#running-the-pipeline)
 * [Main arguments](#main-arguments)
     * [`-profile`](#-profile-single-dash)
@@ -21,15 +20,6 @@
     * [`--max_cpus`](#--max_cpus)
 
 
-## General Nextflow info
-Nextflow handles job submissions on SLURM or other environments, and supervises running the jobs. Thus the Nextflow process must run until the pipeline is finished. We recommend that you put the process running in the background through `screen` / `tmux` or similar tool. Alternatively you can run nextflow within a cluster job submitted your job scheduler.
-
-It is recommended to limit the Nextflow Java virtual machines memory. We recommend adding the following line to your environment (typically in `~/.bashrc` or `~./bash_profile`):
-
-```bash
-NXF_OPTS='-Xms1g -Xmx4g'
-```
-
 ## Running the pipeline
 The typical command for running the pipeline  with the "nextflow_mergefastq' alias is as follows:
 ```bash
@@ -39,15 +29,7 @@ module load nextflow
 nextflow_mergefastq --inputdir fastq_files --outputdir merged_fastq_files 
 ```
 
-This will launch the pipeline with the `legion` configuration profile. See below for more information about profiles.
-
-If you wnat to run the pipeline using a different profile, then you need to specify the full command instead of the shortcut:
-```bash
-module load blic-modules
-module load nextflow
-
-nextflow run /shared/ucl/depts/cancer/apps/nextflow_pipelines/merge_fastq-master -profile legion --inputdir fastq_files --outputdir merged_fastq_files 
-```
+This will launch the pipeline with the `legion` or `myriad` configuration profile, depending on where you submit the job from.
 
 Note that the pipeline will create the following files in your working directory:
 
@@ -60,16 +42,21 @@ merged_fastq_files       # Finished results (configurable, see below)
 
 ## Main Arguments
 
-### `-profile`
-Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
+To see all the available arguments, use the `--help` flag
+```bash
+nextflow_wgsalign --help
+```
 
-* `standard`
-    * The default profile, used if `-profile` is not specified at all.
-    * Runs locally and expects all software to be installed and available on the `PATH`.
+The main arguments are:
+
+### `-profile`
+This parameter is NOT necessary as the shortcut `nextflow_merge_fastq` takes care of selecting the appropiate configuration profile. But just for your information, profiles are used to give 
+configuration presets for different compute environments.
+
 * `legion`
-    * A generic configuration profile to be used with the UCL cluster legion.
-* `none`
-    * No configuration at all. Useful if you want to build your own config from scratch and want to avoid loading in the default `base` config profile (not recommended).
+    * A generic configuration profile to be used with the UCL cluster legion
+* `myriad`
+    * A generic configuration profile to be used with the UCL cluster myriad
 
 ### `--inputdir`
 Use this to specify the location of your input FastQ files. For example:
@@ -80,13 +67,9 @@ Use this to specify the location of your input FastQ files. For example:
 
 If left unspecified, it will look for the default dir: './fastq_files'
 
-
 ## Job Resources
 ### Automatic resubmission
 Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the steps in the pipeline, if the job exits with an error code of `143` (exceeded requested resources) it will automatically resubmit with higher requests (2 x original, then 3 x original). If it still fails after three times then the pipeline is stopped.
-
-### Custom resource requests
-Wherever process-specific requirements are set in the pipeline, the default value can be changed by creating a custom config file. See the files in [`conf`](../conf) for examples.
 
 ## Other command line parameters
 
@@ -100,13 +83,6 @@ Please note that since this pipeline only runs one process, the -resume option i
 You can also supply a run name to resume a specific run: `-resume [run-name]`. Use the `nextflow log` command to show previous run names.
 
 **NB:** Single hyphen (core Nextflow option)
-
-### `-c`
-Specify the path to a specific config file (this is a core NextFlow command).
-
-**NB:** Single hyphen (core Nextflow option)
-
-Note - you can use this to override defaults.
 
 ### `--max_memory`
 Use to set a top-limit for the default memory requirement for each process.
