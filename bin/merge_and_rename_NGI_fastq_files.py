@@ -17,7 +17,7 @@ def merge_files(input_dir, dest_dir):
                 fastq_files.append(os.path.join(subdir, fastq))
    
     #Match NGI sample number from flowcell
-    sample_pattern=re.compile("^(.+)_S[0-9]+_.+_R([1-2])_")
+    sample_pattern=re.compile("^(.+)_S[0-9]+(_.+)*_R([1-2])_")
     #Remove files that already have the right name (i.e have been merged already)
     matches=[]
     for fastq_file in fastq_files:
@@ -40,7 +40,7 @@ def merge_files(input_dir, dest_dir):
         fastq_files_read2=[]
         
         for fq in fastq_files:
-            this_sample_pattern = re.compile("^" + sample_name + "_S[0-9]+_.+_R([1-2])_")
+            this_sample_pattern = re.compile("^" + sample_name + "_S[0-9]+(_.+)*_R([1-2])_")
             if this_sample_pattern.match(os.path.basename(fq)) and "_R1_" in os.path.basename(fq):
                 fastq_files_read1.append(fq) 
                 
