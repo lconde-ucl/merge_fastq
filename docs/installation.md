@@ -1,10 +1,10 @@
 # merge_fastq: Installation
 
-The merge_fastq pipeline is already installed in legion. You just need to load nextflow and start using it:
+The merge_fastq pipeline is already installed in myriad. You just need to load it and start using it:
 
 ```bash
 module load blic-modules
-module load nextflow
+module load nextflow_mergefastq
 
 nextflow_mergefastq --inputdir DIR --outputdir DIR
 ```

@@ -24,7 +24,7 @@
 The typical command for running the pipeline  with the "nextflow_mergefastq' alias is as follows:
 ```bash
 module load blic-modules
-module load nextflow
+module load nextflow_mergefastq
 
 nextflow_mergefastq --inputdir fastq_files --outputdir merged_fastq_files 
 ```
