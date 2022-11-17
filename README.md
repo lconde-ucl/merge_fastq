@@ -6,6 +6,7 @@
 
 ### Introduction
 This version of the pipeline (1.0) was built using [Nextflow](https://www.nextflow.io) (**DSL1**)
+
 A DSL2 version is available in v2.0
 
 ### Documentation
