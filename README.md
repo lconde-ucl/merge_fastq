@@ -18,6 +18,7 @@ to make sure that lanes are merged correctly.
 
 Specifically, filenames have to match the following regular expression: ^(.+)_S[0-9]+(_.+)*_R([1-2])_
 
+```
 Example:
 	fastq_files/E3387-3t_S10_L001_R1_001.fastq.gz
 	fastq_files/E3387-3t_S10_L003_R1_001.fastq.gz
@@ -25,6 +26,7 @@ Example:
 	fastq_files/E3387-3t_S11_L002_R1_001.fastq.gz
 	
 	are merged as ./E3387-3t_R1.fastq.gz
+```
 
 ## Quick Start
 
