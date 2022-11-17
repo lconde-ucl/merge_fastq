@@ -1,112 +1,87 @@
-nextflow.enable.dsl = 2
-
+#!/usr/bin/env nextflow
 /*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PARAMETERS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+========================================================================================
+                         merge_fastq
+========================================================================================
+ merge_fastq Analysis Pipeline.
+ #### Homepage / Documentation
+ https://github.com/UCL-BLIC/merge_fastq
+----------------------------------------------------------------------------------------
 */
 
-fastqs_ch = Channel.fromPath( params.inputdir )
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    MODULES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { MERGEFASTQ } from './modules/local/mergefastq'
-
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    HELP 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
 
 def helpMessage() {
-    log.info """
-          Usage:
-          The typical command for running the pipeline is as follows:
-          merge_fastq --inputdir ./data [--outdir results]
+    log.info"""
+    =======================================================
+         merge_fastq v${workflow.manifest.version}
+    =======================================================
+    Usage:
 
-          Arguments:
-           --inputdir                     Folder that contains the FastQ files [./data]
-           --outdir                       Output director [./results]
-           --help                         This usage statement
+    The typical command for running the pipeline is as follows:
 
-          Other useful nextflow arguments:
-           -resume                        Execute the script using the cached results, useful to continue executions that was stopped by an error [False]
-           -with-tower                    Monitor workflow execution with Seqera Tower service [False]
-           -ansi-log                      Enable/disable ANSI console logging [True]
-           -N, -with-notification         Send a notification email on workflow completion to the specified recipients [False]
+    nextflow_mergefastq --inputdir fastq_files --outputdir merged_fastq_files
 
-          ** Important **
-          ** FastQ files are expected to have the typical Illumina naming convention (Ex: SampleName_S1_L001_R1_001.fastq.gz) to make sure that lanes are merged correctly **
-          ** Specifically, filenames have to match the following regular expression: ^(.+)_S[0-9]+(_.+)*_R([1-2])_ **
-
-          Example: 
-
-           fastq_files/E3387-3t_S10_L001_R1_001.fastq.gz
-           fastq_files/E3387-3t_S10_L003_R1_001.fastq.gz
-           fastq_files/E3387-3t_S11_L001_R1_001.fastq.gz
-           fastq_files/E3387-3t_S11_L002_R1_001.fastq.gz
-
-           are merged as ./E3387-3t_R1.fastq.gz
-
-           }
-           """
+    Optional arguments:
+      --inputdir                    Path to input data [fastq_files]
+      --outdir                      The output directory where the results will be saved [merged_fastq_files]
+    """.stripIndent()
 }
 
+// Show help emssage
+params.help = false
 if (params.help){
     helpMessage()
     exit 0
 }
 
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    HEADER
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+// Defines reads and outputdir
+params.inputdir = "fastq_files"
+params.outdir = 'merged_fastq_files'
+input = file(params.inputdir)
 
 
 // Header 
-println "=============================================================="
-println "    N E X T F L O W   M E R G E F A S T Q   P I P E L I N E   "
-println "=============================================================="
-println "['Pipeline Name']     = nf/merge_FASTQ"
-println "['Pipeline Version']  = $workflow.manifest.version"
+println "========================================================"
+println "       M E R G E _ F A S T Q    P I P E L I N E         "
+println "========================================================"
+println "['Pipeline Name']     = merge_fastq"
+println "['Pipeline Version']  = workflow.manifest.version"
 println "['Inputdir']          = $params.inputdir"
-println "['Outdir']            = $params.outdir"
-println "['Working dir']       = $workflow.workDir"
+println "['Output dir']        = $params.outdir"
+println "['Working dir']       = workflow.workDir"
+println "['Container Engine']  = workflow.containerEngine"
+println "['Current home']      = $HOME"
 println "['Current user']      = $USER"
+println "['Current path']      = $PWD"
+println "['Working dir']       = workflow.workDir"
+println "['Script dir']        = workflow.projectDir"
+println "['Config Profile']    = workflow.profile"
 println "========================================================"
 
+ 
+// Merge FastQ files
 
+process merge_fastq {
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN ALL WORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
+    publishDir params.outdir, mode: 'copy'  
 
-workflow{ 
-    MERGEFASTQ(fastqs_ch) 
-} 
+    input:
+    file inputdir from input
 
+    output:
+    file merge_log
+    file '*.gz'
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    THE END
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {                
-    println "Pipeline completed at: $workflow.complete"
-    println "Execution status: ${ workflow.success ? 'OK' : 'failed' }"
+    script:
+    """
+    merge_and_rename_NGI_fastq_files.py $inputdir ./ > merge_log
+    """
 }
 
+workflow.onComplete { 
+    println ( workflow.success ? "Merging done! transferring merged files and wrapping up..." : "Oops .. something went wrong" )
+    log.info "[nf-core/test] Pipeline Complete"
 
-workflow.onError = {
-    println "Oops... Pipeline execution stopped with the following message: ${workflow.errorMessage}"
 }
+
