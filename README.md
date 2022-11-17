@@ -5,8 +5,8 @@
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A50.32.0-brightgreen.svg)](https://www.nextflow.io/)
 
 ### Introduction
-The pipeline is built using [Nextflow](https://www.nextflow.io).
-
+This version of the pipeline (1.0) was built using [Nextflow](https://www.nextflow.io) (**DSL1**)
+A DSL2 version is available in v2.0
 
 ### Documentation
 The nf-core/merge_fastq pipeline comes with documentation about the pipeline, found in the `docs/` directory:
