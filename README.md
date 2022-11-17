@@ -16,10 +16,13 @@ This pipeline is based on the [merge_and_rename_NGI_fastq_files.py](https://gith
 script from SciLifeLab. FastQ files are expected to have the typical Illumina naming convention (Ex: SampleName_S1_L001_R1_001.fastq.gz) 
 to make sure that lanes are merged correctly.
 
-Specifically, filenames have to match the following regular expression: ^(.+)_S[0-9]+(_.+)*_R([1-2])_
-
+Specifically, filenames have to match the following regular expression: 
 ```
+^(.+)_S[0-9]+(_.+)*_R([1-2])_
+```
+
 Example:
+```
 	fastq_files/E3387-3t_S10_L001_R1_001.fastq.gz
 	fastq_files/E3387-3t_S10_L003_R1_001.fastq.gz
 	fastq_files/E3387-3t_S11_L001_R1_001.fastq.gz
