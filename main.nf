@@ -1,12 +1,25 @@
 nextflow.enable.dsl = 2
 
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PARAMETERS
+    VALIDATE & PRINT PARAMETER SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-fastqs_ch = Channel.fromPath( params.inputdir )
+
+// Check inputdir exists
+
+// This actually cannot happen as there is a default inputdir in nextflow.config
+if( !params.inputdir ){
+    exit 1, "No inputdir specified! Specify path with --inputdir."
+}
+
+inputdir = file(params.inputdir)
+if( !inputdir.exists() ) exit 1, "Inputdir folder not found: ${params.inputdir}. Specify path with --inputdir."
+
+fastqs_ch = Channel.fromPath( params.inputdir, checkIfExists: true)
+
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -27,11 +40,11 @@ def helpMessage() {
     log.info """
           Usage:
           The typical command for running the pipeline is as follows:
-          merge_fastq --inputdir ./data [--outdir results]
+          merge_fastq --inputdir ./fastq_files [--outdir ./merged_fastq_files]
 
           Arguments:
-           --inputdir                     Folder that contains the FastQ files [./data]
-           --outdir                       Output director [./results]
+           --inputdir                     Folder that contains the FastQ files [./fastq_files]
+           --outdir                       Output director [./merged_fastq_files]
            --help                         This usage statement
 
           Other useful nextflow arguments:
@@ -74,7 +87,7 @@ if (params.help){
 println "=============================================================="
 println "    N E X T F L O W   M E R G E F A S T Q   P I P E L I N E   "
 println "=============================================================="
-println "['Pipeline Name']     = nf/merge_FASTQ"
+println "['Pipeline Name']     = nf/merge_fastq"
 println "['Pipeline Version']  = $workflow.manifest.version"
 println "['Inputdir']          = $params.inputdir"
 println "['Outdir']            = $params.outdir"

@@ -18,9 +18,8 @@
 
 process MERGEFASTQ {
 
-    tag "$sample"
     publishDir params.outdir, mode: 'copy'  
-//    debug true
+    debug true
 
     input:
     file inputdir
